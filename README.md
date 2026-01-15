@@ -4,7 +4,7 @@
 
 ## 🎯 Proje Hakkında
 
-OLC (Open Learn Close), spor, kitap, teknoloji ve borsa kategorilerinde haberleri otomatik toplayan, AI ile özetleyen ve 3 seviyeli okuma deneyimi sunan akıllı haber platformudur.
+OLC (Open Learn Close), spor, kitap, teknoloji, borsa vb... kategorilerinde haberleri otomatik toplayan, AI ile özetleyen ve 3 seviyeli okuma deneyimi sunan akıllı haber platformudur.
 
 **Felsefe:** Uzun haberleri okumak için saatler harcamak yerine, AI özetleri ile 30 saniyede öğren!
 
@@ -33,6 +33,7 @@ https://www.notion.so/wwwsercankuru/lk-proje-denemem-OLC-Open-Learn-Close-2e59e0
 
 ## 👤 Geliştirici
 
+Ahmet Sercan Kuru
 Gazi Üniversitesi İstatistik Bölümü
 
 **"Open it. Learn it. Close it. Move on."**
