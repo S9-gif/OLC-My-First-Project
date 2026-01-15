@@ -29,7 +29,7 @@ OLC (Open Learn Close), spor, kitap, teknoloji ve borsa kategorilerinde haberler
 
 ## 📖 Geliştirme Günlüğü
 
-[Development Log](./docs/dev-log/)
+https://www.notion.so/wwwsercankuru/lk-proje-denemem-OLC-Open-Learn-Close-2e59e0171b448031ab8ae4cd54ca88e3
 
 ## 👤 Geliştirici
 
