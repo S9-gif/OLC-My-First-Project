@@ -40,4 +40,4 @@ Gazi Üniversitesi İstatistik Bölümü
 
 ## 📄 Lisans
 
-Gazi Üniversitesi İstatistik 2. Sınıf
+Gazi Üniversitesi
