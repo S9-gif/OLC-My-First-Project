@@ -40,4 +40,4 @@ Gazi Üniversitesi İstatistik Bölümü
 
 ## 📄 Lisans
 
-MIT
+Gazi Üniversitesi İstatistik 2. Sınıf
