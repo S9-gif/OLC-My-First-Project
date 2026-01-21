@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .core.config import settings
-from .api import haberler
+from .api import haberler, ai
 
 # FastAPI app oluştur
 app = FastAPI(
@@ -13,10 +13,10 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# CORS middleware (Frontend için)
+# CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Production'da kısıtlanacak
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -40,3 +40,4 @@ def health():
 
 # API routers
 app.include_router(haberler.router, prefix="/api/v1", tags=["haberler"])
+app.include_router(ai.router, prefix="/api/v1", tags=["ai"])
