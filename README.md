@@ -6,7 +6,7 @@
 
 OLC (Open Learn Close), spor, kitap, teknoloji, borsa vb... kategorilerinde haberleri otomatik toplayan, AI ile özetleyen ve 3 seviyeli okuma deneyimi sunan akıllı haber platformudur.
 
-**Felsefe:** Uzun haberleri okumak için saatler harcamak yerine, AI özetleri ile 30 saniyede öğren!
+**Felsefe:** Uzun haberleri okumak ve ham bilgiyi öğrenmek için saatler harcamak yerine, AI özetleri ile 30 saniyede öğren!
 
 ## ✨ Özellikler
 
@@ -40,4 +40,4 @@ Gazi Üniversitesi İstatistik Bölümü
 
 ## 📄 Lisans
 
-MIT
+Gazi Üniversitesi
