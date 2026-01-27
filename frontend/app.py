@@ -3,6 +3,99 @@ import requests
 import pandas as pd
 from datetime import datetime
 
+
+# Custom CSS
+st.markdown("""
+<style>
+    /* Ana container */
+    .main {
+        padding-top: 2rem;
+    }
+    
+    /* Başlık stilleri */
+    h1 {
+        color: #1f77b4;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    h3 {
+        color: #2c3e50;
+        font-weight: 600;
+        margin-top: 1rem;
+    }
+    
+    /* Haber kartları için divider */
+    hr {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        border: none;
+        border-top: 2px solid #e0e0e0;
+    }
+    
+    /* Info box'lar */
+    .stAlert > div {
+        padding: 1rem;
+        border-radius: 0.5rem;
+    }
+    
+    /* Expander başlıkları */
+    .streamlit-expanderHeader {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+    
+    /* Sidebar */
+    .css-1d391kg {
+        background-color: #f8f9fa;
+    }
+    
+    /* Metrikler */
+    [data-testid="stMetricValue"] {
+        font-size: 2rem;
+        font-weight: 700;
+    }
+    
+    /* Butonlar */
+    .stButton > button {
+        border-radius: 0.5rem;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    /* Sentiment renkleri */
+    .sentiment-positive {
+        color: #2ecc71;
+        font-weight: 600;
+    }
+    
+    .sentiment-neutral {
+        color: #95a5a6;
+        font-weight: 600;
+    }
+    
+    .sentiment-negative {
+        color: #e74c3c;
+        font-weight: 600;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# Sayfa konfigürasyonu
+st.set_page_config(
+    page_title="OLC - Open Learn Close",
+    page_icon="📰",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+
 # Sayfa konfigürasyonu
 st.set_page_config(
     page_title="OLC - Open Learn Close",
@@ -90,8 +183,12 @@ def show_haber_card(haber):
         st.divider()
 
 # Başlık
-st.title("📰 OLC - Open Learn Close")
-st.markdown("**Open (Hızlı) → Learn (Detaylı) → Close (Tam Metin)**")
+st.markdown("""
+# 📰 OLC - Open Learn Close
+### *Üç Seviyeli Haber Okuma Deneyimi*
+
+**Open** (5 sn) → **Learn** (30 sn) → **Close** (2 dk)
+""")
 
 # OLC Açıklama
 with st.expander("ℹ️ OLC Nedir?"):
@@ -147,7 +244,25 @@ with st.sidebar:
         pass
 
 # Ana içerik
+st.subheader("🔍 Arama")
+
+col_search, col_button = st.columns([4, 1])
+
+with col_search:
+    search_query = st.text_input(
+        "Başlık veya içerikte ara:",
+        placeholder="Örn: Galatasaray, Bitcoin, yapay zeka...",
+        label_visibility="collapsed"
+    )
+
+with col_button:
+    search_button = st.button("🔍 Ara", use_container_width=True)
+
+st.divider()
+
 st.subheader("📰 Haberler")
+
+
 
 # Haberleri getir
 try:
@@ -172,6 +287,13 @@ try:
                         if h.get('flash_ozet') 
                         and h.get('flash_ozet', '').strip() 
                         and len(h.get('flash_ozet', '')) > 20]
+             
+        if search_query:
+            search_lower = search_query.lower()
+            haberler = [h for h in haberler 
+                        if search_lower in h.get('baslik', '').lower() 
+                        or search_lower in h.get('flash_ozet', '').lower()
+                        or search_lower in h.get('detayli_ozet', '').lower()]
         
         # Sonuçlar
         st.success(f"✅ {len(haberler)} haber bulundu")
