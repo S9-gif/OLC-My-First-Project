@@ -12,7 +12,7 @@
 
 OLC (Open Learn Close), spor, kitap, teknoloji, borsa vb... kategorilerinde haberleri otomatik toplayan, AI ile özetleyen ve 3 seviyeli okuma deneyimi sunan akıllı haber platformudur.
 
-**Felsefe:** Uzun haberleri okumak ve ham bilgiyi öğrenmek için saatler harcamak yerine, AI özetleri ile 30 saniyede öğren!
+**Vizyon:** Uzun haberleri okumak ve ham bilgiyi öğrenmek için saatler harcamak yerine, AI özetleri ile 30 saniyede öğren!
 
 ---
 
@@ -28,7 +28,7 @@ OLC (Open Learn Close), spor, kitap, teknoloji, borsa vb... kategorilerinde habe
 
 ## ✨ Özellikler
 
-- 🤖 **AI Özet** — GPT-4o-mini ile otomatik flash + detaylı özet
+- 🤖 **AI Özet** — İlk planda Claude AI Mock model ile otomatik flash + detaylı özet
 - 📊 **Sentiment Analizi** — Haberin genel havası (olumlu / nötr / olumsuz)
 - 🔥 **Trend Takibi** — En çok konuşulan konular ve anahtar kelimeler
 - 🎯 **Filtreleme** — Kategori, sentiment ve arama ile kolay erişim
@@ -45,7 +45,7 @@ Backend:
 ├── FastAPI          → REST API
 ├── SQLAlchemy       → ORM
 ├── PostgreSQL       → Database
-└── OpenAI GPT-4o-mini → AI özet + sentiment
+└── Claude AI → AI özet + sentiment
 
 Frontend:
 ├── Streamlit        → Web UI
