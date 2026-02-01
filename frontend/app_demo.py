@@ -1,7 +1,5 @@
 import streamlit as st
-import requests
-import pandas as pd
-from datetime import datetime
+import json
 
 
 st.set_page_config(
@@ -93,9 +91,6 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
-
-# Backend URL
-BACKEND_URL = "https://olc-backend.onrender.com/api/v1"
 
 # Sentiment emoji mapping
 SENTIMENT_EMOJI = {
@@ -203,22 +198,10 @@ with st.sidebar:
     st.divider()
 
     st.header("📊 İstatistikler")
-    try:
-        stats_response = requests.get(f"{BACKEND_URL}/stats/sentiment", timeout=10)
-        if stats_response.status_code == 200:
-            stats = stats_response.json()
-            st.metric("📰 Toplam Haber", stats['total'])
-
-            breakdown = stats.get('breakdown', {})
-            for sentiment, data in breakdown.items():
-                emoji = SENTIMENT_EMOJI.get(sentiment, "😐")
-                st.metric(
-                    f"{emoji} {sentiment.capitalize()}",
-                    data['count'],
-                    f"{data['percentage']:.1f}%"
-                )
-    except:
-        pass
+    st.metric("📰 Toplam Haber", 127)
+    st.metric("😊 Olumlu", 54, "42.5%")
+    st.metric("😐 Nötr", 52, "40.9%")
+    st.metric("😔 Olumsuz", 21, "16.5%")
 
 # Ana içerik
 st.subheader("🔍 Arama")
@@ -239,53 +222,47 @@ st.divider()
 
 st.subheader("📰 Haberler")
 
+# Mock veri
+mock_haberler = [
+    {
+        "id": 10,
+        "baslik": "Yapay Zeka Sağlık Sektöründü Dönüştürüyor",
+        "kategori": "teknoloji",
+        "sentiment_label": "olumlu",
+        "kaynak_adi": "TechCrunch Türkiye",
+        "kaynak_url": "https://techcrunch.tr/ai-saglik",
+        "flash_ozet": "Yapay zeka teknolojileri, sağlık sektöründe devrim niteliğinde değişikliklere yol açıyor. Yeni geliştirilen AI algoritmaları, hastalıkların erken teşhisinde doktorlara yardımcı oluyor.",
+        "detayli_ozet": "• Yapay zeka teknolojileri, sağlık sektöründe devrim niteliğinde değişikliklere yol açıyor\n• Yeni geliştirilen AI algoritmaları, hastalıkların erken teşhisinde doktorlara yardımcı oluyor\n• Özellikle kanser taramalarında yapay zeka, insan gözünün göremediği ayrıntıları tespit edebiliyor\n• Araştırmacılar, AI destekli tanı sistemlerinin hata oranını yüzde 30 oranında azalttığını belirtiyor",
+        "tam_metin": "Yapay zeka sağlık endüstrisinde oyunun kurallarını değiştiriyor. Algoritmaların hastalıkları insanlardan daha erken tespit edebildiğini gösteren yeni araştırmalar ortaya çıktı.",
+        "anahtar_kelimeler": ["yapay zeka", "sağlık", "AI", "tıp"]
+    },
+    {
+        "id": 11,
+        "baslik": "Bitcoin Son 24 Saatte Yüzde 15 Arttı",
+        "kategori": "borsa",
+        "sentiment_label": "olumlu",
+        "kaynak_adi": "CryptoNews TR",
+        "kaynak_url": "https://cryptonews.tr/bitcoin-rise",
+        "flash_ozet": "Bitcoin'in değeri son 24 saat içinde önemli ölçüde yükseldi. Analistler, bu artışın kurumsal yatırımcıların geri dönmesiyle ilgili olduğunu söylüyor.",
+        "detayli_ozet": "• Bitcoin'in değeri son 24 saat içinde %15 oranında yükseldi\n• Fiyat 45,000 doları aştı, yılın en yüksek seviyesine ulaştı\n• Kurumsal yatırımcılar yeniden piyasaya giriyor\n• Altcoinler de birlikte hareket ediyor",
+        "tam_metin": "Kripto piyasalarında güçlü bir toparlanma yaşanıyor. Özellikle Bitcoin'in yıllık seviyeler yakalaması, pozitif sentiment gösteriyor.",
+        "anahtar_kelimeler": ["Bitcoin", "kripto", "borsa", "yatırım"]
+    },
+    {
+        "id": 12,
+        "baslik": "Galatasaray Şampiyonluk Yarışında Öncü Konumda",
+        "kategori": "spor",
+        "sentiment_label": "nötr",
+        "kaynak_adi": "Spor Haber",
+        "kaynak_url": "https://spor.tr/galatasaray-sampiyonluk",
+        "flash_ozet": "Galatasaray, ligin son haftasında önemli bir görüşüyü kazanarak şampiyonluk yarışında öncü konuma yükseldi.",
+        "detayli_ozet": "• Galatasaray, karşılaştığı rakibine 3-2 ile galip geldi\n• Ekibin son 5 maçtaki performansı dikkat çekici seviyede\n• Teknik direktör oyunculardaki konsantrasyondan memnun\n• Sağlık sorunları olan iki oyuncu takıma kısa sürede dönebilir",
+        "tam_metin": "Sarı-kırmızılar puan farkını 3'e çıkarttı. Takımın motivasyonu oldukça yüksek durumda.",
+        "anahtar_kelimeler": ["Galatasaray", "futbol", "şampiyonluk", "spor"]
+    }
+]
 
-# Haberleri getir
-try:
-    params = {}
-    if secili_kategori != "Tümü":
-        params['kategori'] = secili_kategori
+st.success(f"✅ {len(mock_haberler)} haber bulundu")
 
-    response = requests.get(f"{BACKEND_URL}/haberler", params=params, timeout=30)
-
-    if response.status_code == 200:
-        data = response.json()
-        haberler = data['haberler']
-
-        # Filtreler (client-side)
-        if secili_sentiment != "Tümü":
-             haberler = [h for h in haberler if h.get('sentiment_label') == secili_sentiment]
-
-        # AI İşlenmiş filtresi - flash_ozet kontrolü
-        if ai_islendi:
-             haberler = [h for h in haberler
-                        if h.get('flash_ozet')
-                        and h.get('flash_ozet', '').strip()
-                        and len(h.get('flash_ozet', '')) > 20]
-
-        if search_query:
-            search_lower = search_query.lower()
-            haberler = [h for h in haberler
-                        if search_lower in h.get('baslik', '').lower()
-                        or search_lower in h.get('flash_ozet', '').lower()
-                        or search_lower in h.get('detayli_ozet', '').lower()]
-
-        # Sonuçlar
-        st.success(f"✅ {len(haberler)} haber bulundu")
-
-        # Haberleri göster
-        if len(haberler) == 0:
-            st.warning("Bu filtrelere uygun haber bulunamadı.")
-        else:
-            for haber in haberler[:20]:
-                show_haber_card(haber)
-
-            if len(haberler) > 20:
-                st.info(f"💡 {len(haberler) - 20} haber daha var. Filtreleri kullanarak daraltın.")
-
-    else:
-        st.error(f"❌ Backend hata: {response.status_code}")
-
-except Exception as e:
-    st.error(f"❌ Bağlantı hatası: {str(e)}")
-    st.info("💡 Backend uyuyor olabilir. 30 saniye bekleyip tekrar deneyin.")
+for haber in mock_haberler:
+    show_haber_card(haber)
