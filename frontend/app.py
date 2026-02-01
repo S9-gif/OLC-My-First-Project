@@ -1,7 +1,19 @@
 import streamlit as st
-import requests
-import pandas as pd
+import requests     #  HTTP istekleri için bu modüldeki bazı fonksiyonları kullanacağım.
+import pandas as pd     #  İstatistiksel analizler için okuldan da bildiğim pandas. 
 from datetime import datetime
+
+
+
+
+
+# Sayfa konfigürasyonu
+st.set_page_config(
+    page_title="OLC - Open Learn Close",
+    page_icon="📰",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
 
 # Custom CSS
@@ -85,29 +97,12 @@ st.markdown("""
         font-weight: 600;
     }
 </style>
-""", unsafe_allow_html=True)
-
-# Sayfa konfigürasyonu
-st.set_page_config(
-    page_title="OLC - Open Learn Close",
-    page_icon="📰",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
-
-
-# Sayfa konfigürasyonu
-st.set_page_config(
-    page_title="OLC - Open Learn Close",
-    page_icon="📰",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+""", unsafe_allow_html=True)        #  Normalde markdown içine yaılanlar metin olarak algılanır fakat bu True ile içine yazılan HHTML CSS kodlarının kod olarak kullanılmasını sağlıyorum.
 
 # Backend URL
-BACKEND_URL = "https://olc-backend.onrender.com/api/v1"
+BACKEND_URL = "https://olc-backend.onrender.com/api/v1"     #  Backend'e ulaşıyorum API ile ilerleyen yerkerde backend'in bütün kısımlarını /haber vs... ile çağıracağız. ana kök API.
 
-# Sentiment emoji mapping
+# Sentiment emoji mapping ile backend'deki sentiment analizlerine emoji ile ekleme yapıyorum.
 SENTIMENT_EMOJI = {
     "olumlu": "😊",
     "nötr": "😐",
@@ -123,26 +118,26 @@ KATEGORI_EMOJI = {
 }
 
 # Haber kartı göster (OLC 3-Level)
-def show_haber_card(haber):
-    sentiment = haber.get('sentiment_label', 'nötr')
-    kategori = haber.get('kategori', 'genel')
+def show_haber_card(haber):     #   Her bir haber için oluşturulacak haber kartı bunu da haber objeleri ile yapacak.Haber objelerinden yararlanacak.
+    sentiment = haber.get('sentiment_label', 'nötr')        #  Haber objesinden sentiment_label bilgisini çeker ve default değer olarak nötr almasını istiyorum değer yoksa
+    kategori = haber.get('kategori', 'genel')       #  Aynısı kategoriyi çekerken de yapıyoruz.Kategori varsa alınır yoksa default değer olarak gözükür.
     
     # Kart container
-    with st.container():
+    with st.container():        #  Her haber nesnesi için sınırlar.
         # Başlık
-        st.markdown(f"### 📰 {haber['baslik']}")
+        st.markdown(f"### 📰 {haber['baslik']}")        #  Alınan haber onjesinin başık bilgisini başlık olarak kullanıyorum.
         
         # Metadata
-        emoji_sentiment = SENTIMENT_EMOJI.get(sentiment, "😐")
+        emoji_sentiment = SENTIMENT_EMOJI.get(sentiment, "😐")      #  Default değerleri ile birlikte sentiment değerini ve kategorisini ackend'den get ediyorum.
         emoji_kategori = KATEGORI_EMOJI.get(kategori, "📰")
         
         col1, col2, col3 = st.columns([2, 2, 1])
         with col1:
-            st.markdown(f"{emoji_sentiment} **{sentiment.upper()}**")
+            st.markdown(f"{emoji_sentiment} **{sentiment.upper()}**")       #  ** 'lar metin türü için
         with col2:
             st.markdown(f"{emoji_kategori} **{kategori.upper()}**")
         with col3:
-            st.markdown(f"🔢 ID: {haber['id']}")
+            st.markdown(f"🆔 ID: {haber['id']}")
         
         # 📰 OPEN - Flash Özet (Her zaman görünür)
         st.markdown("#### 📰 OPEN - Hızlı Bakış")
@@ -150,11 +145,11 @@ def show_haber_card(haber):
         st.info(flash_ozet)
         
         # 📚 LEARN - Detaylı Özet (Expander)
-        with st.expander("📚 LEARN - Detaylı Özet"):
-            detayli_ozet = haber.get('detayli_ozet', 'Detaylı özet henüz oluşturulmadı')
+        with st.expander("📚 LEARN - Detaylı Özet"):        #  Tıklanınca isteğe bağlı açılacak expender sayesinde.
+            detayli_ozet = haber.get('detayli_ozet', 'Detaylı özet henüz oluşturulmadı')        #  haber nesnesindeki detaylı özeti alır.
             if detayli_ozet:
                 # Bullet point'leri parse et
-                lines = detayli_ozet.split('\n')
+                lines = detayli_ozet.split('\n')        #  Eğer detaylı özet varsa bulunan \n ler ile ayırırırım maddeleri burda parse ederim.(Bunu lines değişkenine atadım sonra linesda parse ettim.)
                 for line in lines:
                     if line.strip():
                         st.markdown(line)
@@ -166,7 +161,7 @@ def show_haber_card(haber):
             tam_metin = haber.get('tam_metin', 'Tam metin bulunamadı')
             st.markdown(tam_metin)
             
-            st.divider()
+            st.divider()        
             
             # Kaynak link
             kaynak_url = haber.get('kaynak_url', '#')
@@ -208,7 +203,7 @@ with st.expander("ℹ️ OLC Nedir?"):
 st.divider()
 
 # Sidebar - Filtreler
-with st.sidebar:
+with st.sidebar:        #  Bu alandaki bütün işlemler sidebar alanında
     st.header("🔍 Filtreler")
     
     # Kategori filtresi
@@ -224,13 +219,13 @@ with st.sidebar:
     
     st.divider()
     
-    # İstatistikler
+    # Canlı istatistik almak için
     st.header("📊 İstatistikler")
-    try:
-        stats_response = requests.get(f"{BACKEND_URL}/stats/sentiment", timeout=10)
-        if stats_response.status_code == 200:
-            stats = stats_response.json()
-            st.metric("📰 Toplam Haber", stats['total'])
+    try:        #  İlgili bilgileri almaya çalışırken hata oluşursa uygulama çökmesin.
+        stats_response = requests.get(f"{BACKEND_URL}/stats/sentiment", timeout=10)     #  Başarısız olursa donmaması için 10 saniye bekleme süresi.
+        if stats_response.status_code == 200:           #  Başarılı bir şekilde alırsak status code 200 olsun
+            stats = stats_response.json()       #  JSON veri tipini python objesine çevirdim.
+            st.metric("📰 Toplam Haber", stats['total'])        #  Çıktı veriyorum.
             
             breakdown = stats.get('breakdown', {})
             for sentiment, data in breakdown.items():
@@ -251,7 +246,7 @@ col_search, col_button = st.columns([4, 1])
 with col_search:
     search_query = st.text_input(
         "Başlık veya içerikte ara:",
-        placeholder="Örn: Galatasaray, Bitcoin, yapay zeka...",
+        placeholder="Örn: Yapay zeka, Roket, Bitcoin, ...",
         label_visibility="collapsed"
     )
 
@@ -267,13 +262,13 @@ st.subheader("📰 Haberler")
 # Haberleri getir
 try:
     # API parametreleri
-    params = {}
-    if secili_kategori != "Tümü":
-        params['kategori'] = secili_kategori
+    params = {}     #  Boş bir dictionary yapı kategori ve bu kategorinin değerini tutacak.
+    if secili_kategori != "Tümü":       #  Seöili kategori tümü değilse
+        params['kategori'] = secili_kategori        #  Mevcut parametre kategori değeridir.
     
-    response = requests.get(f"{BACKEND_URL}/haberler", params=params, timeout=30)
+    response = requests.get(f"{BACKEND_URL}/haberler", params=params, timeout=30)       #  Backend'den çekilecek url bu parametre ile belirlenecek ve url'nin sonuna eklenir.
     
-    if response.status_code == 200:
+    if response.status_code == 200:     #  API başarılı bir şekilde alınırsa bunu True olarak alıcam.
         data = response.json()
         haberler = data['haberler']
         
@@ -288,18 +283,18 @@ try:
                         and h.get('flash_ozet', '').strip() 
                         and len(h.get('flash_ozet', '')) > 20]
              
-        if search_query:
-            search_lower = search_query.lower()
-            haberler = [h for h in haberler 
-                        if search_lower in h.get('baslik', '').lower() 
-                        or search_lower in h.get('flash_ozet', '').lower()
-                        or search_lower in h.get('detayli_ozet', '').lower()]
+        if search_query:        #  Serach alanı dolu yani True ise
+            search_lower = search_query.lower()     #  Yazılanların hepsini küçük harf olarak aldım.
+            haberler = [h for h in haberler         #  Şartların sağlandığı haberleri haberler listeme ekleyecek olan küçük algoritamız.
+                        if search_lower in h.get('baslik', '').lower()      #  Serach querry 'deki değer gezilen haberin başlığı ile uyuşuyorsa.
+                        or search_lower in h.get('flash_ozet', '').lower()      #  ya da flash özetten bir kelime ile uyuşuyorsa
+                        or search_lower in h.get('detayli_ozet', '').lower()]       #Yada detaylı özetten bir kelime ile uyuşuyorsa bunu haberler listeme eklerim (Haberi).
         
         # Sonuçlar
         st.success(f"✅ {len(haberler)} haber bulundu")
         
         # Haberleri göster
-        if len(haberler) == 0:
+        if len(haberler) == 0:      #  Haberler listem boşsa haber bulamamıştır.
             st.warning("Bu filtrelere uygun haber bulunamadı.")
         else:
             for haber in haberler[:20]:  # İlk 20 haber
