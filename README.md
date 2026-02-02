@@ -113,8 +113,7 @@ Deployment:
 
 ## 📖 Geliştirme Günlüğü
 
-https://www.notion.so/wwwsercankuru/lk-proje-denemem-OLC-Open-Learn-Close-2e59e0171b448031ab8ae4cd54ca88e3
-
+https://wwwsercankuru.notion.site/lk-proje-OLC-Open-Learn-Close-2e59e0171b448031ab8ae4cd54ca88e3?source=copy_link
 ---
 
 ## 👤 Geliştirici
