@@ -33,7 +33,7 @@ OLC (Open Learn Close), spor, kitap, teknoloji, borsa vb... kategorilerinde habe
 - 🔥 **Trend Takibi** — En çok konuşulan konular ve anahtar kelimeler
 - 🎯 **Filtreleme** — Kategori, sentiment ve arama ile kolay erişim
 - 📈 **Dashboard** — Interaktif grafiklere sahip analitik sayfa
-- ⚡ **Otomatik Toplama** — N8N ile her 6 saatte yeni haberler
+- ⚡ **Otomatik Toplama** — Python scheduler ile her 6 saatte yeni haberler (ücretsiz, N8N gerektirmez)
 
 ---
 
@@ -44,8 +44,8 @@ Backend:
 ├── Python 3
 ├── FastAPI          → REST API
 ├── SQLAlchemy       → ORM
-├── PostgreSQL       → Database
-└── Claude AI → AI özet + sentiment
+├── PostgreSQL (Neon) → Database (ücretsiz, süresiz)
+└── Claude AI (opsiyonel/mock) → AI özet + sentiment
 
 Frontend:
 ├── Streamlit        → Web UI
@@ -53,10 +53,11 @@ Frontend:
 └── Pandas           → Data processing
 
 Automation:
-└── N8N              → RSS → API otomasyonu
+└── Python (schedule + feedparser) → RSS → API otomasyonu (N8N yerine, tamamen ücretsiz)
 
 Deployment:
-├── Render           → Backend + Database
+├── Render           → Backend (+ Automation worker)
+├── Neon             → Database
 └── Streamlit Cloud  → Frontend
 ```
 
@@ -65,14 +66,14 @@ Deployment:
 ## 🏗️ Sistem Mimarisi
 
 ```
-┌──────────┐    RSS     ┌───────┐   POST   ┌─────────┐
-│  N8N     │──────────→ │ N8N   │─────────→│ Backend │
-│ Schedule │            │ Parse │          │ (Render)│
-└──────────┘            └───────┘          └────┬────┘
+┌──────────┐    RSS     ┌─────────┐   POST   ┌─────────┐
+│  Python  │──────────→ │ Python  │─────────→│ Backend │
+│ Schedule │            │ Parser  │          │ (Render)│
+└──────────┘            └─────────┘          └────┬────┘
                                                 │
                                           ┌─────▼─────┐
-                                          │PostgreSQL │
-                                          │  Database │
+                                          │ PostgreSQL│
+                                          │  (Neon)   │
                                           └─────▲─────┘
                                                 │
                                           ┌─────┴─────┐
@@ -105,7 +106,7 @@ Deployment:
 | Database & Models | ✅ Tamamlandı |
 | REST API Endpoints | ✅ Tamamlandı |
 | AI Entegrasyonu | ✅ Tamamlandı |
-| N8N Otomasyonu | ✅ Tamamlandı |
+| Python Otomasyonu (N8N yerine) | ✅ Tamamlandı |
 | Streamlit Frontend | ✅ Tamamlandı |
 | Deployment | ✅ Tamamlandı |
 
