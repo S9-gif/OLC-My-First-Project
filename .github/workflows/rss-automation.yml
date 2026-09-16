@@ -1,0 +1,30 @@
+name: RSS Automation (N8N replacement)
+
+# N8N'in yaptığı işi (RSS -> Backend -> AI) tamamen ücretsiz şekilde yapar.
+# GitHub Actions public repolarda ücretsizdir, 7/24 açık bir sunucu/worker gerekmez.
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"  # Her 6 saatte bir
+  workflow_dispatch: {}     # Manuel tetikleme (Actions sekmesinden "Run workflow")
+
+jobs:
+  fetch-and-process:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: automation
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run RSS fetcher
+        env:
+          BACKEND_URL: ${{ vars.BACKEND_URL }}
+        run: python main.py --once

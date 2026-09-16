@@ -1,3 +1,4 @@
+import sys
 import schedule
 import time
 from datetime import datetime
@@ -13,6 +14,13 @@ def job():
 
 
 if __name__ == "__main__":
+    # --once: tek seferlik çalıştırıp çık (GitHub Actions cron için).
+    # Sürekli açık bir sunucu/worker gerektirmediği için tamamen ücretsizdir.
+    if "--once" in sys.argv:
+        print(f"🚀 OLC Automation (tek seferlik) - {datetime.now()}")
+        job()
+        sys.exit(0)
+
     print(f"🚀 OLC Automation başlatıldı - {datetime.now()}")
     print(f"⏰ Her {CHECK_INTERVAL_HOURS} saatte bir çalışacak\n")
 
